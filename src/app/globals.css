@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #1c1b1a;
+  --bg-raised: #242220;
+  --bg-input: #2a2825;
+  --text: #edeae4;
+  --text-dim: #9c9890;
+  --line: #37342f;
+  --accent: #5b7fa3;
+  --accent-dim: #3e5a75;
+  --amber: #b8863b;
+  --green: #6e9c6e;
+  --terracotta: #c97b63;
+  --lavender: #8b6fa8;
+  --grey: #6b6863;
+  --slate: #7a8a99;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-input: var(--bg-input);
+  --color-text: var(--text);
+  --color-text-dim: var(--text-dim);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-amber: var(--amber);
+  --color-green: var(--green);
+  --color-terracotta: var(--terracotta);
+  --color-lavender: var(--lavender);
+  --color-grey: var(--grey);
+  --color-slate: var(--slate);
+  --font-display: var(--font-barlow-condensed);
+  --font-sans: var(--font-inter);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), sans-serif;
+  overscroll-behavior-y: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
