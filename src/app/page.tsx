@@ -43,10 +43,6 @@ interface DraftShape {
 }
 
 const DRAFT_KEY = "workout-log-draft";
-const PENDING_BG = "#4A4742";
-const PENDING_BORDER = "#6B6863";
-const DONE_BG = "rgba(53,94,59,0.22)";
-const DONE_BORDER = "#355E3B";
 
 function secondsToDuration(sec: number | null): string {
   if (sec == null) return "";
@@ -297,7 +293,7 @@ export default function LogPage() {
           >
             <div className="text-xl mb-2">{t.icon}</div>
             <div className="font-display font-semibold text-[15px] mb-1">{t.name}</div>
-            <div className={`text-[11px] ${selectedTemplateId === t.id ? "text-[#D6E2ED]" : "text-text-dim"}`}>
+            <div className={`text-[11px] ${selectedTemplateId === t.id ? "text-accent" : "text-text-dim"}`}>
               {t.exercises.length} exercises · {t.days_logged} days logged
             </div>
           </button>
@@ -368,7 +364,7 @@ export default function LogPage() {
           </button>
           <button
             onClick={() => setShowConfirm(true)}
-            className="flex-1 bg-accent text-[#12181D] text-center py-3.5 rounded-xl font-semibold text-[14px]"
+            className="flex-1 bg-accent text-accent-fg text-center py-3.5 rounded-xl font-semibold text-[14px]"
           >
             Submit workout
           </button>
@@ -440,7 +436,7 @@ function ConfirmSubmitDialog({
           <button
             onClick={onConfirm}
             disabled={submitting}
-            className="flex-1 bg-accent text-[#12181D] py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40"
+            className="flex-1 bg-accent text-accent-fg py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40"
           >
             {submitting ? "Submitting…" : "Confirm"}
           </button>
@@ -468,8 +464,8 @@ function ExerciseCard({
         : "BODYWEIGHT";
 
   const cardStyle = item.edited
-    ? { background: DONE_BG, borderColor: DONE_BORDER }
-    : { background: PENDING_BG, borderColor: PENDING_BORDER };
+    ? { background: "var(--done-bg)", borderColor: "var(--done-border)" }
+    : { background: "var(--pending-bg)", borderColor: "var(--pending-border)" };
 
   return (
     <div className="mx-5 mb-3 border rounded-xl px-4 py-3.5" style={cardStyle}>
