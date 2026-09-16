@@ -1,20 +1,48 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #1c1b1a;
-  --bg-raised: #242220;
-  --bg-input: #2a2825;
-  --text: #edeae4;
-  --text-dim: #9c9890;
-  --line: #37342f;
-  --accent: #5b7fa3;
-  --accent-dim: #3e5a75;
-  --amber: #b8863b;
-  --green: #6e9c6e;
-  --terracotta: #c97b63;
-  --lavender: #8b6fa8;
-  --grey: #6b6863;
-  --slate: #7a8a99;
+:root,
+[data-theme="night"] {
+  --bg: #0d1420;
+  --bg-raised: #16202e;
+  --bg-input: #1c2836;
+  --text: #e8edf3;
+  --text-dim: #7c8ba0;
+  --line: #26374a;
+  --accent: #6fa8dc;
+  --accent-dim: #2c4a66;
+  --amber: #e0a458;
+  --green: #5fae8c;
+  --terracotta: #e08868;
+  --lavender: #a98fd1;
+  --grey: #6c7a8c;
+  --slate: #8fa6be;
+  --pending-bg: #22303f;
+  --pending-border: #3d4d62;
+  --done-bg: rgba(95, 174, 140, 0.18);
+  --done-border: #3f8f6b;
+  --accent-fg: #12181d;
+}
+
+[data-theme="day"] {
+  --bg: #f6f2e9;
+  --bg-raised: #ffffff;
+  --bg-input: #eee8da;
+  --text: #2b2a28;
+  --text-dim: #8a8578;
+  --line: #e1dacb;
+  --accent: #3d6690;
+  --accent-dim: #cfe0ec;
+  --amber: #c97f1e;
+  --green: #4f8f52;
+  --terracotta: #c25d3f;
+  --lavender: #7a5a9e;
+  --grey: #85806f;
+  --slate: #56697a;
+  --pending-bg: #ece7d9;
+  --pending-border: #cdc5b0;
+  --done-bg: rgba(79, 143, 82, 0.14);
+  --done-border: #3f7a42;
+  --accent-fg: #ffffff;
 }
 
 @theme inline {
@@ -26,12 +54,17 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
+  --color-accent-fg: var(--accent-fg);
   --color-amber: var(--amber);
   --color-green: var(--green);
   --color-terracotta: var(--terracotta);
   --color-lavender: var(--lavender);
   --color-grey: var(--grey);
   --color-slate: var(--slate);
+  --color-pending-bg: var(--pending-bg);
+  --color-pending-border: var(--pending-border);
+  --color-done-bg: var(--done-bg);
+  --color-done-border: var(--done-border);
   --font-display: var(--font-barlow-condensed);
   --font-sans: var(--font-inter);
 }
@@ -42,6 +75,7 @@ body {
   color: var(--text);
   font-family: var(--font-inter), sans-serif;
   overscroll-behavior-y: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 * {
