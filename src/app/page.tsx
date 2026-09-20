@@ -67,8 +67,14 @@ function durationToSeconds(str: string): number | null {
 }
 
 function todayStr(): string {
+  // Use local calendar date, not UTC — toISOString() converts to UTC, which
+  // rolls over to "tomorrow" in the evening for anyone west of Greenwich
+  // (most of the Americas), showing a date ahead of the real local date.
   const d = new Date();
-  return d.toISOString().slice(0, 10);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function loadDraft(): DraftShape | null {
@@ -168,6 +174,23 @@ export default function LogPage() {
 
   function removeItem(tempId: string) {
     setItems((prev) => prev.filter((i) => i.tempId !== tempId));
+  }
+
+  // Adds a second (third, etc.) entry for the same exercise right after the
+  // one that was duplicated — e.g. a heavier or lighter set of Bench later
+  // in the same workout. Starts as "pending" so it's clear it still needs review.
+  function duplicateItem(source: LoggedItem) {
+    const newItem: LoggedItem = {
+      ...source,
+      tempId: `${source.exercise.id}-${tempIdCounter.current++}`,
+      edited: false,
+    };
+    setItems((prev) => {
+      const idx = prev.findIndex((i) => i.tempId === source.tempId);
+      const next = [...prev];
+      next.splice(idx + 1, 0, newItem);
+      return next;
+    });
   }
 
   // Any real field edit both updates the value and marks the card "done" (green).
@@ -321,18 +344,26 @@ export default function LogPage() {
         />
         {filteredExercises.length > 0 && (
           <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-bg-raised border border-line rounded-lg overflow-hidden">
-            {filteredExercises.map((ex) => (
-              <button
-                key={ex.id}
-                onClick={() => addExercise(ex)}
-                className="w-full text-left px-3.5 py-2.5 text-sm hover:bg-bg-input border-b border-line last:border-b-0"
-              >
-                {ex.name}
-                <span className="text-text-dim text-xs ml-2">
-                  {ex.muscle_group ?? ex.category}
-                </span>
-              </button>
-            ))}
+            {filteredExercises.map((ex) => {
+              const alreadyAddedCount = items.filter((i) => i.exercise.id === ex.id).length;
+              return (
+                <button
+                  key={ex.id}
+                  onClick={() => addExercise(ex)}
+                  className="w-full text-left px-3.5 py-2.5 text-sm hover:bg-bg-input border-b border-line last:border-b-0"
+                >
+                  {ex.name}
+                  <span className="text-text-dim text-xs ml-2">
+                    {ex.muscle_group ?? ex.category}
+                  </span>
+                  {alreadyAddedCount > 0 && (
+                    <span className="text-accent text-xs ml-2">
+                      + add another (already have {alreadyAddedCount})
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -344,9 +375,23 @@ export default function LogPage() {
         </div>
       )}
 
-      {items.map((item) => (
-        <ExerciseCard key={item.tempId} item={item} onChange={updateItem} onRemove={removeItem} />
-      ))}
+      {items.map((item) => {
+        const sameExercise = items.filter((i) => i.exercise.id === item.exercise.id);
+        const occurrenceLabel =
+          sameExercise.length > 1
+            ? `${sameExercise.findIndex((i) => i.tempId === item.tempId) + 1} of ${sameExercise.length}`
+            : null;
+        return (
+          <ExerciseCard
+            key={item.tempId}
+            item={item}
+            occurrenceLabel={occurrenceLabel}
+            onChange={updateItem}
+            onRemove={removeItem}
+            onDuplicate={() => duplicateItem(item)}
+          />
+        );
+      })}
 
       {items.length === 0 && (
         <div className="mx-5 mb-6 border border-dashed border-line rounded-xl px-4 py-6 text-center text-text-dim text-sm">
@@ -448,12 +493,16 @@ function ConfirmSubmitDialog({
 
 function ExerciseCard({
   item,
+  occurrenceLabel,
   onChange,
   onRemove,
+  onDuplicate,
 }: {
   item: LoggedItem;
+  occurrenceLabel: string | null;
   onChange: (tempId: string, patch: Partial<LoggedItem>) => void;
   onRemove: (tempId: string) => void;
+  onDuplicate: () => void;
 }) {
   const { exercise } = item;
   const tagLabel =
@@ -472,6 +521,11 @@ function ExerciseCard({
       <div className="flex justify-between items-center mb-2.5">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-[15px]">{exercise.name}</span>
+          {occurrenceLabel && (
+            <span className="text-[9px] text-accent border border-accent rounded px-1.5 py-0.5">
+              {occurrenceLabel}
+            </span>
+          )}
           {!item.edited && (
             <span className="text-[9px] text-text-dim border border-line rounded px-1.5 py-0.5 uppercase">
               pending
@@ -482,6 +536,14 @@ function ExerciseCard({
           <span className="text-[10px] text-text-dim border border-line rounded px-1.5 py-0.5 uppercase">
             {tagLabel}
           </span>
+          <button
+            onClick={onDuplicate}
+            aria-label={`Log another ${exercise.name} entry`}
+            title="Log this exercise again at a different weight"
+            className="text-text-dim text-sm px-1"
+          >
+            ⧉
+          </button>
           <button
             onClick={() => onRemove(item.tempId)}
             aria-label={`Remove ${exercise.name}`}
