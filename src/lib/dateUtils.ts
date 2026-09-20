@@ -14,7 +14,11 @@ export function yearMonthOf(dateStr: string): string {
 
 /** Returns an array of the last N Monday-anchored week-start strings, ending with the week containing `today`. */
 export function lastNWeeks(n: number, today: Date = new Date()): string[] {
-  const todayStr = today.toISOString().slice(0, 10);
+  // Local calendar date, not UTC (see the same fix in app/page.tsx's todayStr()).
+  const y = today.getFullYear();
+  const m = String(today.getMonth() + 1).padStart(2, "0");
+  const d = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${y}-${m}-${d}`;
   const currentMonday = mondayOf(todayStr);
   const weeks: string[] = [];
   const cursor = new Date(currentMonday + "T00:00:00Z");
