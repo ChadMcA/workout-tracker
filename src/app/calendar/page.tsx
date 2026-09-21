@@ -404,8 +404,8 @@ function DayDetailModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 px-0 sm:px-6">
-      <div className="w-full sm:max-w-[420px] max-h-[85vh] overflow-y-auto bg-bg-raised border border-line rounded-t-2xl sm:rounded-2xl p-5">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/60 px-0 sm:px-6">
+      <div className="w-full sm:max-w-[420px] max-h-[85vh] overflow-y-auto bg-bg-raised border border-line rounded-t-2xl sm:rounded-2xl p-5 pb-8">
         <div className="flex justify-between items-center mb-4">
           <div className="font-display font-semibold text-lg">{formatDateLong(date)}</div>
           <button onClick={onClose} className="text-text-dim text-lg px-1">
