@@ -433,7 +433,7 @@ function ConfirmSubmitDialog({
   onConfirm: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
       <div className="w-full max-w-[320px] bg-bg-raised border border-line rounded-2xl p-5">
         <div className="font-display font-semibold text-lg mb-1.5">Submit this workout?</div>
         <div className="text-sm text-text-dim mb-1 leading-relaxed">
